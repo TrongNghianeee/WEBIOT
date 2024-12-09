@@ -2,6 +2,9 @@ from flask import Flask, render_template, request, send_file
 import csv
 import os
 from datetime import datetime
+import numpy as np
+import tensorflow as tf
+from models import dataset_ops, vectorization_ops
 
 app = Flask(__name__)
 
@@ -10,6 +13,46 @@ if not os.path.exists(data_file):
     with open(data_file, mode="w", newline="") as file:
         writer = csv.writer(file)
         writer.writerow(["URL", "Good", "Bad", "Datetime"])
+
+# Tải mô hình đã huấn luyện
+model = tf.keras.models.load_model('full_convolution_combined.keras')
+
+# Tạo dữ liệu huấn luyện để khởi tạo char_vectorizer
+data_train, _, _ = dataset_ops.load_data(split_ratio=0.3, random_state=42)
+word_vectorizer = vectorization_ops.create_word_vectorizer(data_train['url'])
+char_vectorizer = vectorization_ops.create_char_vectorizer(data_train['url'])
+
+# Đọc ngưỡng từ file
+best_threshold = np.load("fpr_tpr/best_threshold_fccombi.npy")
+
+# Hàm để kiểm tra URL với mô hình
+def check_url_with_model(url):
+    # Vector hóa URL
+    url_word_vector = word_vectorizer.transform([url]).toarray()
+    url_char_vector = char_vectorizer.texts_to_sequences([url])
+
+    # Pad URL để phù hợp với độ dài đầu vào của mô hình
+    input_length = 200
+    if url_word_vector.shape[1] < input_length:
+        word_padding = np.zeros((1, input_length - url_word_vector.shape[1]))
+        url_word_vector_padded = np.hstack((url_word_vector, word_padding))
+    else:
+        url_word_vector_padded = url_word_vector[:, :input_length]
+    
+    url_char_vector_padded = tf.keras.preprocessing.sequence.pad_sequences(
+        url_char_vector, maxlen=input_length, padding='post'
+    )
+
+    # Dự đoán xác suất
+    probability = model.predict(
+        (url_word_vector_padded, url_char_vector_padded)
+    )[0][0]
+
+    # Kiểm tra với ngưỡng
+    if probability >= best_threshold:
+        return "ĐỘC HẠI", probability
+    else:
+        return "AN TOÀN", probability
 
 @app.route('/add_evaluate', methods=['GET', 'POST'])
 def add_evaluate():
@@ -72,16 +115,9 @@ def home():
                     reader = csv.reader(file)
                     next(reader)  # Skip header
                     rows = [row for row in reader]
-
-            # Check if URL exists and evaluate
-            for row in rows:
-                if row[0] == url:
-                    good = int(row[1])
-                    bad = int(row[2])
-                    message = "Good" if good > bad else "Bad"
-                    break
-            else:
-                message = "URL not found in the database."
+                # Nếu URL không có trong cơ sở dữ liệu, kiểm tra bằng mô hình
+                message, probability = check_url_with_model(url)
+                message = f"URL '{url}' là {message} với xác suất {probability:.2f}"
 
     return render_template('home.html', message=message)
 
@@ -99,5 +135,3 @@ def clear_data():
 
 if __name__ == '__main__':
     app.run(debug=True)
-    
-    #đf

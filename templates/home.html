@@ -47,7 +47,12 @@
             margin: 20px;
             font-size: 1.2em;
             font-weight: bold;
+        }
+        .safe {
             color: green;
+        }
+        .harmful {
+            color: red;
         }
     </style>
 </head>
@@ -70,8 +75,13 @@
     </form>
 
     {% if message %}
-    <div class="message">{{ message }}</div>
+        <div class="message">
+            {% if 'AN TOÀN' in message %}
+                <span class="safe">{{ message }}</span>
+            {% else %}
+                <span class="harmful">{{ message }}</span>
+            {% endif %}
+        </div>
     {% endif %}
 </body>
 </html>
-``
