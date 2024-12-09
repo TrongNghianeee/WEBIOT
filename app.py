@@ -123,15 +123,37 @@ def home():
 
 @app.route('/download')
 def download_file():
-    return send_file(data_file, as_attachment=True)
+    # Read current data from the CSV
+    rows = []
+    if os.path.exists(data_file):
+        with open(data_file, mode="r") as file:
+            reader = csv.reader(file)
+            next(reader)  # Skip header
+            rows = [row for row in reader]
 
-@app.route('/clear', methods=['POST'])
-def clear_data():
-    # Clear all data in the CSV file
-    with open(data_file, mode="w", newline="") as file:
+    # Prepare the new rows for the download (URL and Status columns)
+    download_rows = []
+    for row in rows:
+        url = row[0]
+        good = int(row[1])
+        bad = int(row[2])
+
+        # Determine the status based on Good and Bad counts
+        status = "Good" if good >= bad else "Bad"
+
+        # Append the URL and Status to the new list
+        download_rows.append([url, status])
+
+    # Create a temporary file for downloading
+    temp_file = "filtered_data.csv"
+    with open(temp_file, mode="w", newline="") as file:
         writer = csv.writer(file)
-        writer.writerow(["URL", "Good", "Bad", "Datetime"])
-    return render_template('add_evaluate.html', rows=[])
+        writer.writerow(["URL", "Status"])  # Write header
+        writer.writerows(download_rows)  # Write the filtered rows
+
+    # Send the filtered file for download
+    return send_file(temp_file, as_attachment=True)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

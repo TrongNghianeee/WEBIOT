@@ -71,7 +71,28 @@
             width: 100%;
             table-layout: fixed;
         }
+    
+        /* Use classes for column width adjustment */
+        .url-column {
+            width: 50%; /* Make the URL column wider */
+    max-width: 500px; /* Set a max width for the column */
+    word-wrap: break-word; /* Allow the URL text to wrap if it's too long */
+    white-space: nowrap; /* Prevent the text from wrapping into multiple lines */
+    overflow: hidden; /* Hide any content that overflows the cell */
+    text-overflow: ellipsis; /* Display '...' if the content is too long to fit */
+        }
+    
+        .good-bad-column {
+            width: 15%; 
+            text-align: center;
+        }
+    
+        .datetime-column {
+            width: 20%; 
+            text-align: center;
+        }
     </style>
+    
 </head>
 <body>
     <div>
@@ -101,24 +122,22 @@
     <table>
         <thead>
             <tr>
-                <th>URL</th>
-                <th>Good</th>
-                <th>Bad</th>
-                <th>Datetime</th>
+                <th class="url-column">URL</th>
+                <th class="good-bad-column">Good</th>
+                <th class="good-bad-column">Bad</th>
+                <th class="datetime-column">Datetime</th>
             </tr>
         </thead>
         <tbody>
             {% for row in rows %}
             <tr>
-                <td>{{ row[0] }}</td>
-                <td>{{ row[1] }}</td>
-                <td>{{ row[2] }}</td>
-                <td>{{ row[3] }}</td>
+                <td class="url-column">{{ row[0] }}</td>
+                <td class="good-bad-column">{{ row[1] }}</td>
+                <td class="good-bad-column">{{ row[2] }}</td>
+                <td class="datetime-column">{{ row[3] }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </body>
 </html>
-
-````
