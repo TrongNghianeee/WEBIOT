@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            background-color: #333;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        nav button {
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        nav button:hover {
+            background-color: #0056b3;
+        }
+        nav button[disabled] {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        h2 {
+            color: #333;
+            margin-left: 10px;
+        }
+        form {
+            margin: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            max-width: 500px;
+        }
+        .message {
+            margin: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <nav>
+            <button onclick="location.href='/add_evaluate'">Add & Evaluate</button>
+            <button onclick="location.href='/download'">Download Data</button>
+            <button disabled>API</button>
+            <button disabled>Protect your browser</button>
+        </nav>
+    </div>
+
+    <h2>Check If a URL Is Harmful</h2>
+    <form method="POST">
+        <label for="url">Enter URL:</label>
+        <input type="text" id="url" name="url" required>
+        <br><br>
+        <button type="submit">Check</button>
+    </form>
+
+    {% if message %}
+    <div class="message">{{ message }}</div>
+    {% endif %}
+</body>
+</html>
