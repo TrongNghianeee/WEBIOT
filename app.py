@@ -8,6 +8,9 @@ from models import dataset_ops, vectorization_ops
 
 app = Flask(__name__)
 
+# Store the latest checked URL and its status
+detected_url_status = {"url": None, "status": None}
+
 data_file = "data.csv"
 if not os.path.exists(data_file):
     with open(data_file, mode="w", newline="") as file:
@@ -91,8 +94,9 @@ def add_evaluate():
 
     return render_template('add_evaluate.html', rows=rows)
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET', 'POST'])
 def home():
+    global detected_url_status
     if request.method == 'POST':
         url = request.form.get('url')
         if url:
@@ -101,6 +105,10 @@ def home():
                 "url": url,
                 "status": message,
                 "probability": round(probability, 2)
+            }
+            detected_url_status = {
+                "url": url,
+                "status": f"{message} (Xác suất: {round(probability, 2)})"
             }
             if request.headers.get('Content-Type') == 'application/json':
                 return jsonify(response)
@@ -138,7 +146,8 @@ def download_file():
 
 @app.route('/api')
 def api_documentation():
-    return render_template('api.html')
+    global detected_url_status
+    return render_template('api.html', detected_url_status=detected_url_status)
 
 if __name__ == '__main__':
     app.run(debug=True)
