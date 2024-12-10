@@ -71,15 +71,14 @@
             width: 100%;
             table-layout: fixed;
         }
-    
-        /* Use classes for column width adjustment */
+
         .url-column {
-            width: 50%; /* Make the URL column wider */
-    max-width: 500px; /* Set a max width for the column */
-    word-wrap: break-word; /* Allow the URL text to wrap if it's too long */
-    white-space: nowrap; /* Prevent the text from wrapping into multiple lines */
-    overflow: hidden; /* Hide any content that overflows the cell */
-    text-overflow: ellipsis; /* Display '...' if the content is too long to fit */
+            width: 50%; 
+            max-width: 500px; 
+            word-wrap: break-word; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis;
         }
     
         .good-bad-column {
@@ -99,7 +98,7 @@
         <nav>
             <button onclick="location.href='/'">Home</button>
             <button onclick="location.href='/download'">Download Data</button>
-            <button disabled>API</button>
+            <button onclick="location.href='/api'">API</button>
             <button disabled>Protect your browser</button>
         </nav>
     </div>
