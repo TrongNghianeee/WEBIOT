@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            background-color: #333;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        nav button {
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        nav button:hover {
+            background-color: #0056b3;
+        }
+        nav button[disabled] {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .content {
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            max-width: 800px;
+        }
+        h2 {
+            color: #333;
+        }
+        pre {
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <nav>
+            <button onclick="location.href='/'">Home</button>
+            <button onclick="location.href='/add_evaluate'">Add & Evaluate</button>
+            <button onclick="location.href='/download'">Download Data</button>
+            <button disabled>Protect your browser</button>
+        </nav>
+    </div>
+
+    <div class="content">
+        <h2>API Documentation</h2>
+        <p>Welcome to the API documentation. Below is the guide on how to interact with the API endpoints:</p>
+
+        <h3>1. Check URL</h3>
+        <p><strong>Endpoint:</strong> <code>POST /</code></p>
+        <p><strong>Description:</strong> Submit a URL to check its safety.</p>
+        <p><strong>Request Body:</strong></p>
+        <pre>
+{
+    "url": "http://example.com"
+}
+        </pre>
+        <p><strong>Response:</strong></p>
+        <pre>
+{
+    "url": "http://example.com",
+    "status": "AN TOÀN",
+    "probability": 0.95
+}
+        </pre>
+
+    </div>
+</body>
+</html>
